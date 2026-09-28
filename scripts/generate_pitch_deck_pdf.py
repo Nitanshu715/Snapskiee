@@ -5,50 +5,33 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, KeepTogether
 from reportlab.pdfgen import canvas
 
-class NumberedCanvas(canvas.Canvas):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._saved_page_states = []
+def draw_background(canvas_obj, doc):
+    canvas_obj.saveState()
+    # Dark background
+    canvas_obj.setFillColor(colors.HexColor("#0A0D14"))
+    canvas_obj.rect(0, 0, 792, 612, fill=1, stroke=0)
+    
+    # Top banner line
+    canvas_obj.setStrokeColor(colors.HexColor("#1F2637"))
+    canvas_obj.setLineWidth(1)
+    canvas_obj.line(40, 565, 752, 565)
+    
+    # Header branding
+    canvas_obj.setFont("Helvetica-Bold", 8)
+    canvas_obj.setFillColor(colors.HexColor("#E01E37"))
+    canvas_obj.drawString(42, 575, "QUALCOMM SNAPDRAGON AI LAB CHALLENGE")
+    canvas_obj.setFont("Helvetica", 8)
+    canvas_obj.setFillColor(colors.HexColor("#9CA3AF"))
+    canvas_obj.drawString(270, 575, "PROJECT SNAPSKIEE - COGNITIVE SCRATCHPAD")
+    canvas_obj.drawRightString(752, 575, "CONFIDENTIAL & PROPRIETARY")
 
-    def showPage(self):
-        self._saved_page_states.append(dict(self.__dict__))
-        self._startPage()
-
-    def save(self):
-        num_pages = len(self._saved_page_states)
-        for state in self._saved_page_states:
-            self.__dict__.update(state)
-            self.draw_page_decorations(num_pages)
-            super().showPage()
-        super().save()
-
-    def draw_page_decorations(self, page_count):
-        # Premium dark gradient background
-        self.saveState()
-        self.setFillColor(colors.HexColor("#0B0F19"))
-        self.rect(0, 0, 792, 612, fill=1, stroke=0)
-        
-        # Subtle header line & branding
-        self.setStrokeColor(colors.HexColor("#1F2937"))
-        self.setLineWidth(1)
-        self.line(40, 565, 752, 565)
-        
-        # Header text
-        self.setFont("Helvetica-Bold", 8)
-        self.setFillColor(colors.HexColor("#E01E37"))
-        self.drawString(42, 575, "QUALCOMM SNAPDRAGON AI LAB CHALLENGE")
-        self.setFont("Helvetica", 8)
-        self.setFillColor(colors.HexColor("#9CA3AF"))
-        self.drawString(270, 575, "PROJECT SNAPSKIEE - COGNITIVE SCRATCHPAD")
-        self.drawRightString(752, 575, "CONFIDENTIAL & PROPRIETARY")
-
-        # Footer
-        self.line(40, 45, 752, 45)
-        self.setFont("Helvetica", 8)
-        self.setFillColor(colors.HexColor("#6B7280"))
-        self.drawString(42, 32, "Designed for Snapdragon X-Powered HP Copilot+ PCs | 45 TOPS Hexagon NPU")
-        self.drawRightString(752, 32, f"Slide {self._pageNumber} of {page_count}")
-        self.restoreState()
+    # Footer banner
+    canvas_obj.line(40, 45, 752, 45)
+    canvas_obj.setFont("Helvetica", 8)
+    canvas_obj.setFillColor(colors.HexColor("#6B7280"))
+    canvas_obj.drawString(42, 32, "Designed for Snapdragon X-Powered HP Copilot+ PCs | 45 TOPS Hexagon NPU")
+    canvas_obj.drawRightString(752, 32, f"Slide {canvas_obj._pageNumber} of 10")
+    canvas_obj.restoreState()
 
 def build_pitch_deck_pdf(output_path="d:/SnapDragon/Snapskiee_Pitch_Deck.pdf"):
     doc = SimpleDocTemplate(
@@ -298,7 +281,7 @@ def build_pitch_deck_pdf(output_path="d:/SnapDragon/Snapskiee_Pitch_Deck.pdf"):
     sum_table.setStyle(TableStyle([('VALIGN', (0,0), (-1,-1), 'TOP')]))
     story.append(sum_table)
 
-    doc.build(story, canvasmaker=NumberedCanvas)
+    doc.build(story, onFirstPage=draw_background, onLaterPages=draw_background)
     print(f"[OK] 10-Page Pitch Deck PDF generated successfully at: {output_path}")
 
 if __name__ == "__main__":
