@@ -47,9 +47,20 @@ class NoteInput(BaseModel):
     title: Optional[str] = "Untitled Note"
     content: str
 
+# Load logo as base64 for bulletproof display in serverless/cloud environments
+LOGO_B64 = ""
+try:
+    with open("assets/logo_b64.txt", "r") as f:
+        LOGO_B64 = f.read().strip()
+except Exception:
+    pass
+
 @app.get("/", response_class=HTMLResponse)
 def index():
-    return """<!DOCTYPE html>
+    logo_src = f"data:image/png;base64,{LOGO_B64}" if LOGO_B64 else "/assets/snapskiee_logo.png"
+    return HTML_TEMPLATE.replace("__LOGO_SRC__", logo_src)
+
+HTML_TEMPLATE = """<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -95,7 +106,7 @@ def index():
     <header class="border-b border-brand-border bg-brand-surface/70 backdrop-blur-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-6 py-4 flex flex-wrap justify-between items-center gap-4">
             <div class="flex items-center gap-4">
-                <img src="/assets/snapskiee_logo.png" alt="Snapskiee Logo" class="w-11 h-11 rounded-xl object-contain drop-shadow-[0_0_12px_rgba(224,30,55,0.4)]">
+                <img src="__LOGO_SRC__" alt="Snapskiee Logo" class="w-11 h-11 rounded-xl object-contain drop-shadow-[0_0_12px_rgba(224,30,55,0.4)]">
                 <div>
                     <div class="flex items-center gap-2">
                         <span class="font-extrabold tracking-tight text-xl text-white">Snapskiee</span>
