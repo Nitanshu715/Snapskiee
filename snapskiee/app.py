@@ -1,9 +1,11 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse, FileResponse
+from fastapi.responses import HTMLResponse, FileResponse, Response
+import base64
 from pydantic import BaseModel
 from typing import Optional, List
 import uuid
+import os
 
 from snapskiee.engine.npu_runtime import SnapdragonNPUEngine
 from snapskiee.engine.synthesizer import NoteSynthesizer
@@ -402,16 +404,34 @@ def get_telemetry():
 
 @app.get("/Snapskiee_Pitch_Deck.pdf")
 def get_pitch_deck():
-    # Dynamic path detection for local Windows and Vercel Linux environments
+    # Attempt to load from embedded python constant first for 100% serverless reliability
+    try:
+        from assets.pdf_b64 import PDF_DATA
+        pdf_bytes = base64.b64decode(PDF_DATA)
+        return Response(
+            content=pdf_bytes,
+            media_type="application/pdf",
+            headers={"Content-Disposition": "inline; filename=Snapskiee_Pitch_Deck.pdf"}
+        )
+    except Exception:
+        pass
+
+    # Fallback to local disk read
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    pdf_path = os.path.join(base_dir, "Snapskiee_Pitch_Deck.pdf")
-    if not os.path.exists(pdf_path):
-        pdf_path = "Snapskiee_Pitch_Deck.pdf"
-    return FileResponse(
-        pdf_path,
-        media_type="application/pdf",
-        headers={"Content-Disposition": "inline; filename=Snapskiee_Pitch_Deck.pdf"}
-    )
+    for path in [
+        os.path.join(base_dir, "Snapskiee_Pitch_Deck.pdf"),
+        "Snapskiee_Pitch_Deck.pdf",
+        "public/Snapskiee_Pitch_Deck.pdf"
+    ]:
+        if os.path.exists(path):
+            with open(path, "rb") as f:
+                return Response(
+                    content=f.read(),
+                    media_type="application/pdf",
+                    headers={"Content-Disposition": "inline; filename=Snapskiee_Pitch_Deck.pdf"}
+                )
+
+    raise HTTPException(status_code=404, detail="Pitch deck not found")
 
 @app.get("/assets/snapskiee_logo.png")
 def get_logo():
