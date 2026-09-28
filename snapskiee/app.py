@@ -95,9 +95,7 @@ def index():
     <header class="border-b border-brand-border bg-brand-surface/70 backdrop-blur-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-6 py-4 flex flex-wrap justify-between items-center gap-4">
             <div class="flex items-center gap-4">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-500 to-red-700 flex items-center justify-center font-black text-white text-xl shadow-lg shadow-rose-900/40">
-                    S
-                </div>
+                <img src="/assets/snapskiee_logo.png" alt="Snapskiee Logo" class="w-11 h-11 rounded-xl object-contain drop-shadow-[0_0_12px_rgba(224,30,55,0.4)]">
                 <div>
                     <div class="flex items-center gap-2">
                         <span class="font-extrabold tracking-tight text-xl text-white">Snapskiee</span>
@@ -395,3 +393,8 @@ def get_telemetry():
 def get_pitch_deck():
     pdf_path = "d:/SnapDragon/Snapskiee_Pitch_Deck.pdf"
     return FileResponse(pdf_path, media_type="application/pdf", filename="Snapskiee_Pitch_Deck.pdf")
+
+@app.get("/assets/snapskiee_logo.png")
+def get_logo():
+    logo_path = "d:/SnapDragon/assets/snapskiee_logo.png"
+    return FileResponse(logo_path, media_type="image/png")

@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="assets/snapskiee_logo.png" alt="Snapskiee Logo" width="180"/>
+
 # ⚡ Snapskiee
 ### *The Autonomous, Zero-Cloud Cognitive Scratchpad for Snapdragon-Powered HP PCs*
 
