@@ -402,8 +402,16 @@ def get_telemetry():
 
 @app.get("/Snapskiee_Pitch_Deck.pdf")
 def get_pitch_deck():
-    pdf_path = "d:/SnapDragon/Snapskiee_Pitch_Deck.pdf"
-    return FileResponse(pdf_path, media_type="application/pdf", filename="Snapskiee_Pitch_Deck.pdf")
+    # Dynamic path detection for local Windows and Vercel Linux environments
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    pdf_path = os.path.join(base_dir, "Snapskiee_Pitch_Deck.pdf")
+    if not os.path.exists(pdf_path):
+        pdf_path = "Snapskiee_Pitch_Deck.pdf"
+    return FileResponse(
+        pdf_path,
+        media_type="application/pdf",
+        headers={"Content-Disposition": "inline; filename=Snapskiee_Pitch_Deck.pdf"}
+    )
 
 @app.get("/assets/snapskiee_logo.png")
 def get_logo():
