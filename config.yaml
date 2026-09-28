@@ -1,0 +1,53 @@
+# Snapskiee Environment & Hardware Configuration
+# Designed & Optimized for Qualcomm Snapdragon X Elite / X Plus Systems
+
+system:
+  app_name: "Snapskiee"
+  version: "1.0.0"
+  environment: "production"
+  debug: false
+  data_dir: "./data/snap_store"
+
+hardware:
+  target_platform: "Snapdragon_X_Elite" # e.g., Snapdragon X Elite, Snapdragon X Plus
+  preferred_execution_provider: "QNNExecutionProvider" # Qualcomm Neural Processing SDK / QNN
+  fallback_execution_providers:
+    - "DmlExecutionProvider" # Windows DirectML fallback
+    - "CPUExecutionProvider" # Universal CPU fallback
+  npu_performance_profile: "burst" # options: low_power, balanced, sustained_high_performance, burst
+  enable_fp16: true
+  enable_int4_quantization: true
+
+models:
+  qualcomm_ai_hub:
+    enabled: true
+    hub_repo: "qualcomm/snapdragon-curated-models"
+  
+  # Core Language Synthesizer (NPU offloaded)
+  text_generation:
+    model_id: "llama-3.2-3b-instruct-quantized-npu"
+    source: "qualcomm-ai-hub"
+    format: "onnx-qnn"
+    max_context_length: 4096
+    temperature: 0.3
+    top_p: 0.9
+    local_path: "./models/text/llama_3_2_3b_qnn.onnx"
+
+  # Multimodal Vision Inspector
+  vision_engine:
+    model_id: "mobile-clip-s2-quantized-npu"
+    source: "qualcomm-ai-hub"
+    format: "onnx-qnn"
+    local_path: "./models/vision/mobile_clip_qnn.onnx"
+
+  # On-Device Embedding & Vector Indexing
+  embeddings:
+    model_id: "all-minilm-l6-v2-int8-npu"
+    dimensions: 384
+    local_path: "./models/embeddings/minilm_l6_qnn.onnx"
+
+engine:
+  telemetry_interval_sec: 2
+  auto_indexing: true
+  max_memory_items: 100000
+  cache_size_mb: 512
