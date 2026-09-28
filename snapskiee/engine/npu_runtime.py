@@ -66,15 +66,15 @@ class SnapdragonNPUEngine:
         # Intelligent structured output based on task
         if task == "action_items":
             result = (
-                "• [Action Item] Finalize Snapdragon AI Hub model pipeline deployment.\n"
-                "• [Action Item] Run inference latency benchmarks on Hexagon NPU.\n"
-                "• [Action Item] Verify zero-cloud privacy compliance."
+                "- [Action Item] Finalize Snapdragon AI Hub model pipeline deployment.\n"
+                "- [Action Item] Run inference latency benchmarks on Hexagon NPU.\n"
+                "- [Action Item] Verify zero-cloud privacy compliance."
             )
         elif task == "tags":
             result = ["#Snapdragon", "#EdgeAI", "#NPU", "#LocalIntelligence", "#ZeroCloud"]
         else:
             result = (
-                f"⚡ [Snapskiee NPU Synthesis]:\n"
+                f"[Snapskiee NPU Synthesis]:\n"
                 f"Summary: Context captured successfully. Processed 100% on-device via {self.active_provider}.\n"
                 f"Key Takeaways: Clean decoupled architecture, zero cloud telemetry, maximum battery efficiency."
             )

@@ -40,8 +40,7 @@ def status():
 
 @app.command()
 def scratch(content: str, title: str = "CLI Scratch Note"):
-    """Quickly synthesize a scratchpad thought directly on the NPU."""
-    console.print(f"[bold cyan]⚡ Offloading inference to Snapdragon Hexagon NPU...[/bold cyan]")
+    console.print(f"[bold cyan][NPU] Offloading inference to Snapdragon Hexagon NPU...[/bold cyan]")
     
     engine = SnapdragonNPUEngine()
     synthesizer = NoteSynthesizer(engine)
